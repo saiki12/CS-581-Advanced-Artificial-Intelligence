@@ -2,8 +2,8 @@ import pandas as pd
 import random
 import math
 import sys
-# import os
-# import csv
+import os
+import csv
 import time
 import matplotlib.pyplot as plt
 
@@ -72,6 +72,7 @@ def simulatedAnnealing(temperature, cooling_schedule, filename, coordinates):
     plt.ioff()
     plt.show()
     path_cost = calculate_distance(cur_solution)
+    formatted_cost = f"{path_cost:.2f}"
     end_time = time.time()
     total_time = end_time - start_time
     print(f'''Somanagoudar, Saikiran, A20542890 solution:
@@ -84,11 +85,12 @@ def simulatedAnnealing(temperature, cooling_schedule, filename, coordinates):
         Number of iterations: {iterations}
         Execution time: {total_time:.2f} seconds
         Complete path cost: {path_cost:.2f}''')
-    # base_filename = os.path.splitext(filename)[0]
-    # output_filename = f"{base_filename}_SOLUTION_SA.csv"
-    # with open(output_filename, mode='w', newline='') as file:
-    #     writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-    #     writer.writerow([i[0] for i in cur_solution])
+    base_filename = os.path.splitext(filename)[0]
+    output_filename = f"{base_filename}_SOLUTION_SA.csv"
+    with open(output_filename, mode='w', newline='') as file:
+        writer = csv.writer(file, delimiter='\n')
+        writer.writerow([formatted_cost])
+        writer.writerow([i[0] for i in cur_solution])
 
 
 # Checking input arguments

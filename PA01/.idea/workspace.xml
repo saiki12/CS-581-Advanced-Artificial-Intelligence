@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm.">
+    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="Second commit:&#10;1. Modified the code.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cs581_P01_A20542890.py" beforeDir="false" afterPath="$PROJECT_DIR$/cs581_P01_A20542890.py" afterDir="false" />
     </list>
@@ -59,7 +59,8 @@
       <workItem from="1709307384343" duration="277000" />
       <workItem from="1709307676730" duration="1812000" />
       <workItem from="1709319803906" duration="6999000" />
-      <workItem from="1709327227769" duration="809000" />
+      <workItem from="1709327227769" duration="1224000" />
+      <workItem from="1709338158157" duration="1505000" />
     </task>
     <task id="LOCAL-00001" summary="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm.">
       <option name="closed" value="true" />
@@ -69,7 +70,23 @@
       <option name="project" value="LOCAL" />
       <updated>1709308709102</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Second commit:&#10;1. Modified the code.">
+      <option name="closed" value="true" />
+      <created>1709328178311</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1709328178311</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Second commit:&#10;1. Modified the code.">
+      <option name="closed" value="true" />
+      <created>1709328242410</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1709328242410</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -77,7 +94,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm." />
-    <option name="LAST_COMMIT_MESSAGE" value="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm." />
+    <MESSAGE value="Second commit: Modified the code" />
+    <MESSAGE value="Second commit:&#10;1. Modified the code." />
+    <option name="LAST_COMMIT_MESSAGE" value="Second commit:&#10;1. Modified the code." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PA01$cs581_P01_A20542890.coverage" NAME="cs581_P01_A20542890 Coverage Results" MODIFIED="1709327497399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
