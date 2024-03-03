@@ -156,7 +156,7 @@ def mutation(individual: List[Union[int, float]], Pm: float) -> List[Union[int, 
 
 # Genetic Algorithm main code
 def geneticAlgorithm(N: int, Pc: float, Pm: float, num_iterations: int, filename: str) -> List[Union[int, float]]:
-    population = # population initialization logic
+    population = # population initialization logic implementation
     for _ in range(num_iterations):
         # Calculating fitness for each individual in the population
         fitnesses = [fitness(individual) for individual in population]
