@@ -8,7 +8,7 @@ import time
 import matplotlib.pyplot as plt
 from typing import List, Tuple
 
-'''Simulated Annealing algorithm'''
+'''Simulated Annealing Algorithm'''
 
 
 # Distance calculation function for Simulated Annealing
@@ -101,16 +101,19 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
     # PLotting the graph
     i = range(1, iterations + 1)
     plt.plot(i, rescaled, label='Fitness', color='blue', marker='o')
-    # x_val = [coord[1] for coord in cur_solution]
-    # y_val = [coord[2] for coord in cur_solution]
-    # plt.plot(x_val, y_val, marker='o')
+
     path_cost = calculate_distance(cur_solution)
     formatted_cost = f"{path_cost:.2f}"
+
+    # Execution time end
     end_time = time.time()
+
     plt.title("Fitness Graph of Simulated Annealing\n"
               "(Close this window to display the final results in terminal)")
     plt.legend()
     plt.grid(True)
+    plt.xlabel('Iterations')
+    plt.ylabel('Fitness values')
     plt.show()
 
     # Calculating total execution time
@@ -141,14 +144,8 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
 '''Genetic Algorithm'''
 
 
-# Fitness function
+# Calculating fitness function
 def fitness(individual, coordnates):
-    # Assuming individual is a list of tuples (e.g., [('A', 10), ('B', 20), ...])
-    # print("individual", individual)
-    # x = sum(value for _, value in individual if isinstance(value, int))
-    print("individual", individual)
-    # for i in range(len(individual)):
-    #     fitness_value = (15 + int(individual[i][1])) - pow(int((individual[i][1])), 2)
     return calculate_distance2(individual, coordnates) ** 2
 
 
@@ -166,17 +163,17 @@ def roulette_wheel(population: List[List[int]], fitnesses: List[float]) -> List[
 # 2-point crossover mechanism
 def two_point_crossover(parent1, parent2):
     size = len(parent1)
-    # Ensure the crossover points exclude the first and last city
+    # Ensuring the crossover points exclude the first and last city
     c_point1, c_point2 = sorted(random.sample(range(1, size - 1), 2))
 
-    # Initialize children with None to facilitate unique city inclusion
+    # Initializing children with None to facilitate unique city inclusion
     child1, child2 = [None] * size, [None] * size
 
-    # Include the start and end city
+    # Including the start and end city
     child1[0], child1[-1] = parent1[0], parent1[0]
     child2[0], child2[-1] = parent2[0], parent2[0]
 
-    # Copy the segments between c_point1 and c_point2 from each parent to the corresponding child
+    # Copying the segments between c_point1 and c_point2 from each parent to the corresponding child
     child1[c_point1:c_point2] = parent1[c_point1:c_point2]
     child2[c_point1:c_point2] = parent2[c_point1:c_point2]
 
@@ -200,30 +197,6 @@ def two_point_crossover(parent1, parent2):
 
 # Mutation function
 def mutation(member, pm):
-    # for i in range(len(member)):
-    #     if random.random() < pm:
-    #         city, value = member[i]
-    #         member[i] = (city, random.randint(0, 40)
-    # return member
-
-    # for i in range(len(member)):
-    #     if random.random() < pm:
-    #         city, value = member[i]
-    #         member[i] = (city, random.randint(0, 40))
-    # return member
-
-    # for i in range(1, len(member) - 1):  # Exclude the first and last element
-    #     if random.random() < pm:
-    #         city, value = member[i]
-    #         member[i] = (city, random.randint(0, 40))
-    # return member
-
-    # for i in range(1, len(member)-1):  # Exclude the first and last element for mutation
-    #     if random.random() < pm:
-    #         swap_with = random.randint(1, len(member)-2)  # Ensure we don't swap the first/last city
-    #         member[i], member[swap_with] = member[swap_with], member[i]
-    # return member
-
     for _ in range(len(member)):
         if random.random() < pm:
             idx1, idx2 = random.sample(range(1, len(member) - 1), 2)  # Exclude start/end city
@@ -231,27 +204,8 @@ def mutation(member, pm):
     return member
 
 
-# def shuffle_list(some_list):
-#     randomized_list = some_list[:]
-#     n = len(randomized_list)
-#     shuffled = False
-#     while not shuffled:
-#         random.shuffle(randomized_list)
-#         shuffled = all(a != b for a, b in zip(some_list, randomized_list))
-#     return randomized_list
-#
-#
-# def shuffle_tuples_in_list(some_list):
-#     return [shuffle_list([t for t in sublist]) for sublist in some_list]
-
-
+# Generating population from the input of city names and number of population
 def generate_population(city_names, n):
-    # # Making start and end city same forming Hamiltonian cycle
-    # start_end_city = city_names[0]
-    # shuffled_cities = shuffle_list(city_names[1:-1])
-    # population = [[start_end_city] + shuffled_cities + [start_end_city] for _ in range(n)]
-    # shuffled_population = shuffle_tuples_in_list(population)
-    # return shuffled_population
     population = []
     for _ in range(n):
         shuffled_cities = city_names[1:-1]  # Exclude the start/end city for shuffling
@@ -264,23 +218,20 @@ def generate_population(city_names, n):
 # Genetic Algorithm main code
 def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordinates: List[Tuple[str, float, float]],
                      filename: str):
+    # Execution time start
     start_time = time.time()
     coordinates.append(coordinates[0])
     initState = coordinates[0][0]
-    print('initial state:', initState)
     init_path_cost = calculate_distance(coordinates)
-    print('initial path cost:', init_path_cost)
 
-    # Create initial population
+    # Creating initial population
     city_names = [(city[0], i) for i, city in enumerate(coordinates)]
 
     population = generate_population(city_names, n)
-    print("population", population)
     min_fit_values, max_fit_values, avg_fit_values = [], [], []
     for i in range(num_iterations):
         # Calculating fitness for each individual in the population
         fitnesses = [fitness(individual, coordinates) for individual in population]
-        print("fitness", fitnesses)
 
         min_fit_values.append(min(fitnesses))
         max_fit_values.append(max(fitnesses))
@@ -289,12 +240,13 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
         parent1 = roulette_wheel(population, fitnesses)
         parent2 = roulette_wheel(population, fitnesses)
 
-        # Perform 2-point crossover
+        # Performing 2-point crossover if the probability of crossover is greater than some random number between 0 and 1
         if random.random() < pc:
             child1, child2 = two_point_crossover(parent1, parent2)
         else:
             child1, child2 = parent1, parent2
-        # Perform mutation
+
+        # Performing mutation
         child1 = mutation(child1, pm)
         child2 = mutation(child2, pm)
 
@@ -302,41 +254,38 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
         least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])[:2]
         population[least_fit_indices[0]] = child1
         population[least_fit_indices[1]] = child2
-        # # Replace parents with new children
-        # population.remove(parent1)
-        # # Removing parent2 only if it is distinct
-        # if parent1 != parent2:
-        #     population.remove(parent2)
-        # population.append(child1)
-        # population.append(child2)
+
+    # Assigning the best individual data to the best_individual variable
     best_individual = max(population, key=lambda x: fitness(x, coordinates))
-    print("best individual", best_individual)
+
+    # Calculating final path cost
     path_cost = calculate_distance2(best_individual, coordinates)
     formatted_cost = f"{path_cost:.2f}"
 
-    final_population = best_individual[:]
+    # Capturing final solution
+    final_solution = best_individual[:]
 
-    # Plotting fitness graph
+    # Plotting the fitness graph
     iterations = range(1, num_iterations + 1)
     plt.figure(figsize=(12, 8))
     plt.plot(iterations, min_fit_values, label='Min Fitness', color='red', marker='o')
     plt.plot(iterations, max_fit_values, label='Max Fitness', color='green', marker='s')
     plt.plot(iterations, avg_fit_values, label='Average Fitness', color='blue', marker='x')
-    plt.xlabel('Iteration')
-    plt.ylabel('Fitness')
-    # coord_dict = {coord[0]: coord[1:] for coord in coordinates}
-    # val = [coord_dict[i[0]] for i in best_individual if i[0] in coord_dict]
-    # x_val = [v[0] for v in val]
-    # y_val = [v[1] for v in val]
-    # plt.plot(x_val, y_val, marker='o')
+    plt.xlabel('Iterations')
+    plt.ylabel('Fitness values')
+
     plt.title('Fitness Graph of Genetic Algorithm\n'
               '(Close this window to display the final results in terminal)')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    # Execution time end
     end_time = time.time()
+    plt.show()
 
+    # Calculating total execution time
     total_time = end_time - start_time
+
+    # Display the results in terminal
     print(f'''Somanagoudar, Saikiran, A20542890 solution:
             Initial state: {initState}
 
@@ -344,7 +293,7 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
             Command Line Parameters: {filename} 2 {num_iterations} {pm}
             Initial path cost: {init_path_cost:.2f}
             Initial solution: {[i[0] for i in coordinates]}
-            Final solution: {[f[0] for f in final_population]}
+            Final solution: {[f[0] for f in final_solution]}
             Number of iterations: {num_iterations}
             Execution time: {total_time:.2f} seconds
             Complete path cost: {path_cost:.2f}''')
@@ -353,7 +302,7 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
     with open(output_filename, mode='w', newline='') as file:
         writer = csv.writer(file, delimiter='\n')
         writer.writerow([formatted_cost])
-        writer.writerow([i[0] for i in final_population])
+        writer.writerow([i[0] for i in final_solution])
 
 
 # Checking input arguments
@@ -370,4 +319,4 @@ else:
 if sys.argv[2] == '1':
     simulatedAnnealing(p1, p2, coordinates, filename)
 elif sys.argv[2] == '2':
-    geneticAlgorithm(100, 1, p1, p2, coordinates, filename)
+    geneticAlgorithm(50, 1, p1, p2, coordinates, filename)
