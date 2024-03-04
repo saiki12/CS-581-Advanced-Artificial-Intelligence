@@ -109,10 +109,12 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
 
 
 # Fitness function
-def fitness(individual: List[Tuple[str, int]]) -> float:
-    # print(f"individual: {individual}, type: {type(individual)}")
-    x = sum(i[1] for i in individual if isinstance(i[1], int))
-    return pow(x, 2)
+def fitness(individual):
+    # Assuming individual is a list of tuples (e.g., [('A', 10), ('B', 20), ...])
+    # print("individual", individual)
+    # x = sum(value for _, value in individual if isinstance(value, int))
+    print("individual", individual)
+    return sum(value for _, value in individual) ** 2
 
 
 # Selection mechanism - Roulette Wheel
@@ -127,39 +129,100 @@ def roulette_wheel(population: List[List[int]], fitnesses: List[float]) -> List[
 
 
 # 2-point crossover mechanism
-def two_point_crossover(parent1: List[int], parent2: List[int]) -> Tuple[List[int], List[int]]:
-    c_point1 = random.randint(0, len(parent1))
-    c_point2 = random.randint(0, len(parent1))
-    c_point1, c_point2 = min(c_point1, c_point2), max(c_point1, c_point2)
-    child1 = parent1[:c_point1] + parent2[c_point1:c_point2] + parent1[c_point2:]
-    child2 = parent2[:c_point1] + parent1[c_point1:c_point2] + parent2[c_point2:]
+def two_point_crossover(parent1, parent2):
+    size = len(parent1)
+    # Ensure the crossover points exclude the first and last city
+    c_point1, c_point2 = sorted(random.sample(range(1, size - 1), 2))
+
+    # Initialize children with None to facilitate unique city inclusion
+    child1, child2 = [None] * size, [None] * size
+
+    # Include the start and end city
+    child1[0], child1[-1] = parent1[0], parent1[0]
+    child2[0], child2[-1] = parent2[0], parent2[0]
+
+    # Copy the segments between c_point1 and c_point2 from each parent to the corresponding child
+    child1[c_point1:c_point2] = parent1[c_point1:c_point2]
+    child2[c_point1:c_point2] = parent2[c_point1:c_point2]
+
+    # Filling in the remaining cities from the other parent, ensuring no duplicates
+    def fill_child(child, parent, end):
+        fill_pos = end
+        for city in parent[end:] + parent[1:end]:
+            if city not in child:
+                while child[fill_pos % size] is not None:
+                    fill_pos += 1
+                child[fill_pos % size] = city
+
+    fill_child(child1, parent2, c_point2)
+    fill_child(child2, parent1, c_point2)
+
+    # Ensuring the start and end city are the same to complete the Hamiltonian cycle
+    child1[-1], child2[-1] = child1[0], child2[0]
+
     return child1, child2
 
 
 # Mutation function
-def mutation(member: List[int], pm: float) -> List[int]:
-    for i in range(len(member)):
+def mutation(member, pm):
+    # for i in range(len(member)):
+    #     if random.random() < pm:
+    #         city, value = member[i]
+    #         member[i] = (city, random.randint(0, 40)
+    # return member
+
+    # for i in range(len(member)):
+    #     if random.random() < pm:
+    #         city, value = member[i]
+    #         member[i] = (city, random.randint(0, 40))
+    # return member
+
+    # for i in range(1, len(member) - 1):  # Exclude the first and last element
+    #     if random.random() < pm:
+    #         city, value = member[i]
+    #         member[i] = (city, random.randint(0, 40))
+    # return member
+
+    # for i in range(1, len(member)-1):  # Exclude the first and last element for mutation
+    #     if random.random() < pm:
+    #         swap_with = random.randint(1, len(member)-2)  # Ensure we don't swap the first/last city
+    #         member[i], member[swap_with] = member[swap_with], member[i]
+    # return member
+
+    for _ in range(len(member)):
         if random.random() < pm:
-            member[i] = (member[i][0], random.randint(0, 40))
+            idx1, idx2 = random.sample(range(1, len(member) - 1), 2)  # Exclude start/end city
+            member[idx1], member[idx2] = member[idx2], member[idx1]
     return member
 
 
-def shuffle_list(some_list):
-    randomized_list = some_list[1:]
-    while True:
-        random.shuffle(randomized_list)
-        for a, b in zip(some_list, randomized_list):
-            if a == b:
-                break
-        else:
-            return randomized_list
+# def shuffle_list(some_list):
+#     randomized_list = some_list[:]
+#     n = len(randomized_list)
+#     shuffled = False
+#     while not shuffled:
+#         random.shuffle(randomized_list)
+#         shuffled = all(a != b for a, b in zip(some_list, randomized_list))
+#     return randomized_list
+#
+#
+# def shuffle_tuples_in_list(some_list):
+#     return [shuffle_list([t for t in sublist]) for sublist in some_list]
 
 
 def generate_population(city_names, n):
-    # Making start and end city same forming Hamiltonian cycle
-    start_end_city = city_names[0]
-    shuffled_cities = shuffle_list(city_names[1:])
-    population = [[start_end_city] + shuffled_cities + [start_end_city] for _ in range(n)]
+    # # Making start and end city same forming Hamiltonian cycle
+    # start_end_city = city_names[0]
+    # shuffled_cities = shuffle_list(city_names[1:-1])
+    # population = [[start_end_city] + shuffled_cities + [start_end_city] for _ in range(n)]
+    # shuffled_population = shuffle_tuples_in_list(population)
+    # return shuffled_population
+    population = []
+    for _ in range(n):
+        shuffled_cities = city_names[1:-1]  # Exclude the start/end city for shuffling
+        random.shuffle(shuffled_cities)
+        individual = [city_names[0]] + shuffled_cities + [city_names[0]]  # Re-add the start/end city
+        population.append(individual)
     return population
 
 
@@ -177,37 +240,32 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
     city_names = [(city[0], i) for i, city in enumerate(coordinates)]
 
     population = generate_population(city_names, n)
-    elitism_size = 5
+    print("population", population)
     for i in range(num_iterations):
         # Calculating fitness for each individual in the population
         fitnesses = [fitness(individual) for individual in population]
-        elites = sorted(population, key=fitness, reverse=True)[:elitism_size]
-        new_population = []
+        parent1 = roulette_wheel(population, fitnesses)
+        parent2 = roulette_wheel(population, fitnesses)
 
-        while len(new_population) < n - elitism_size:
-            # Select parents
-            parent1 = roulette_wheel(population, fitnesses)
-            parent2 = roulette_wheel(population, fitnesses)
+        # Perform 2-point crossover
+        if random.random() < pc:
+            child1, child2 = two_point_crossover(parent1, parent2)
+        else:
+            child1, child2 = parent1, parent2
+        # Perform mutation
+        child1 = mutation(child1, pm)
+        child2 = mutation(child2, pm)
 
-            # Perform 2-point crossover
-            if random.random() < pc:
-                child1, child2 = two_point_crossover(parent1, parent2)
-            else:
-                child1, child2 = parent1, parent2
-
-            # Perform mutation
-            child1 = mutation(child1, pm)
-            child2 = mutation(child2, pm)
-            new_population.extend([child1, child2])
-            # Replace parents with new children
-            # population.remove(parent1)
-        population = elites + new_population
-        # Removing parents only if they are distinct
-        # if parent1 != parent2:
-        #     population.remove(parent2)
-        # # if parent1 and parent2 in population:
-        # population.append(child1)
-        # population.append(child2)
+        # least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])[:2]
+        # population[least_fit_indices[0]] = child1
+        # population[least_fit_indices[1]] = child2
+        # # Replace parents with new children
+        population.remove(parent1)
+        # Removing parent2 only if it is distinct
+        if parent1 != parent2:
+            population.remove(parent2)
+        population.append(child1)
+        population.append(child2)
     best_individual = max(population, key=fitness)
     print("best individual", best_individual)
     path_cost = calculate_distance2(best_individual, coordinates)
