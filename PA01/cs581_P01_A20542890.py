@@ -35,6 +35,25 @@ def calculate_distance2(individual: List[Tuple[str, int]], coordinates: List[Tup
     return t_distance
 
 
+# Rescaling fitness function values
+def rescale_values(values):
+    # Shifting values to ensure the minimum is 0
+    min_value = min(values)
+    shifted_values = [value - min_value for value in values]
+
+    # Finding the new maximum value in the shifted dataset
+    max_shifted = max(shifted_values)
+
+    # Avoiding division by zero in case all values are the same
+    if max_shifted == 0:
+        return [0 for _ in values]  # or [100] if you prefer all max
+
+    # Rescaling values to the range 0 to 100
+    rescaled_values = [(value / max_shifted) * 100 for value in shifted_values]
+
+    return rescaled_values
+
+
 # Simulated Annealing main code
 def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: List[Tuple[str, float, float]],
                        filename: str):
@@ -49,13 +68,16 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
     initSolution = cur_solution[:]
     initTemperature = temperature
     init_path_cost = calculate_distance(cur_solution)
+    fit_values = []
     while temperature > 0:
         # Generating new solution by swapping 2 edges in the current solution in every loop
         new_solution = cur_solution[:]
         edge1, edge2 = random.sample(range(1, len(new_solution)), 2)
         new_solution[edge1:edge2] = reversed(new_solution[edge1:edge2])
-        distance_difference = calculate_distance(cur_solution) - calculate_distance(new_solution)
 
+        # Fitness function calculation - difference between current solution and the new solution
+        distance_difference = calculate_distance(cur_solution) - calculate_distance(new_solution)
+        fit_values.append(distance_difference)
         # Exception handling to avoid the OverflowError
         try:
             acceptance_probability = math.exp(-distance_difference / temperature)
@@ -73,19 +95,28 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
         temperature *= cooling_schedule
         iterations += 1
 
+    # Rescaling fitness values
+    rescaled = rescale_values(fit_values)
+
     # PLotting the graph
-    x_val = [coord[1] for coord in cur_solution]
-    y_val = [coord[2] for coord in cur_solution]
-    plt.plot(x_val, y_val, marker='o')
+    i = range(1, iterations + 1)
+    plt.plot(i, rescaled, label='Fitness', color='blue', marker='o')
+    # x_val = [coord[1] for coord in cur_solution]
+    # y_val = [coord[2] for coord in cur_solution]
+    # plt.plot(x_val, y_val, marker='o')
     path_cost = calculate_distance(cur_solution)
     formatted_cost = f"{path_cost:.2f}"
     end_time = time.time()
-    plt.title("Simulated Annealing Graph\n"
+    plt.title("Fitness Graph of Simulated Annealing\n"
               "(Close this window to display the final results in terminal)")
+    plt.legend()
+    plt.grid(True)
     plt.show()
 
     # Calculating total execution time
     total_time = end_time - start_time
+
+    # Displaying results in the terminal
     print(f'''Somanagoudar, Saikiran, A20542890 solution:
         Initial state: {initState}
 
@@ -97,6 +128,8 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
         Number of iterations: {iterations}
         Execution time: {total_time:.2f} seconds
         Complete path cost: {path_cost:.2f}''')
+
+    # Writing the results to a csv file
     base_filename = os.path.splitext(filename)[0]
     output_filename = f"{base_filename}_SOLUTION_SA.csv"
     with open(output_filename, mode='w', newline='') as file:
@@ -109,12 +142,14 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
 
 
 # Fitness function
-def fitness(individual):
+def fitness(individual, coordnates):
     # Assuming individual is a list of tuples (e.g., [('A', 10), ('B', 20), ...])
     # print("individual", individual)
     # x = sum(value for _, value in individual if isinstance(value, int))
     print("individual", individual)
-    return sum(value for _, value in individual) ** 2
+    # for i in range(len(individual)):
+    #     fitness_value = (15 + int(individual[i][1])) - pow(int((individual[i][1])), 2)
+    return calculate_distance2(individual, coordnates) ** 2
 
 
 # Selection mechanism - Roulette Wheel
@@ -241,9 +276,16 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
 
     population = generate_population(city_names, n)
     print("population", population)
+    min_fit_values, max_fit_values, avg_fit_values = [], [], []
     for i in range(num_iterations):
         # Calculating fitness for each individual in the population
-        fitnesses = [fitness(individual) for individual in population]
+        fitnesses = [fitness(individual, coordinates) for individual in population]
+        print("fitness", fitnesses)
+
+        min_fit_values.append(min(fitnesses))
+        max_fit_values.append(max(fitnesses))
+        avg_fit_values.append(sum(fitnesses) / len(fitnesses))
+
         parent1 = roulette_wheel(population, fitnesses)
         parent2 = roulette_wheel(population, fitnesses)
 
@@ -256,30 +298,44 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
         child1 = mutation(child1, pm)
         child2 = mutation(child2, pm)
 
-        # least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])[:2]
-        # population[least_fit_indices[0]] = child1
-        # population[least_fit_indices[1]] = child2
+        # Implementing elitism
+        least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])[:2]
+        population[least_fit_indices[0]] = child1
+        population[least_fit_indices[1]] = child2
         # # Replace parents with new children
-        population.remove(parent1)
-        # Removing parent2 only if it is distinct
-        if parent1 != parent2:
-            population.remove(parent2)
-        population.append(child1)
-        population.append(child2)
-    best_individual = max(population, key=fitness)
+        # population.remove(parent1)
+        # # Removing parent2 only if it is distinct
+        # if parent1 != parent2:
+        #     population.remove(parent2)
+        # population.append(child1)
+        # population.append(child2)
+    best_individual = max(population, key=lambda x: fitness(x, coordinates))
     print("best individual", best_individual)
     path_cost = calculate_distance2(best_individual, coordinates)
     formatted_cost = f"{path_cost:.2f}"
-    coord_dict = {coord[0]: coord[1:] for coord in coordinates}
+
     final_population = best_individual[:]
-    end_time = time.time()
-    val = [coord_dict[i[0]] for i in best_individual if i[0] in coord_dict]
-    x_val = [v[0] for v in val]
-    y_val = [v[1] for v in val]
-    plt.plot(x_val, y_val, marker='o')
-    plt.title("Genetic Algorithm Graph\n"
-              "(Close this window to display the final results in terminal)")
+
+    # Plotting fitness graph
+    iterations = range(1, num_iterations + 1)
+    plt.figure(figsize=(12, 8))
+    plt.plot(iterations, min_fit_values, label='Min Fitness', color='red', marker='o')
+    plt.plot(iterations, max_fit_values, label='Max Fitness', color='green', marker='s')
+    plt.plot(iterations, avg_fit_values, label='Average Fitness', color='blue', marker='x')
+    plt.xlabel('Iteration')
+    plt.ylabel('Fitness')
+    # coord_dict = {coord[0]: coord[1:] for coord in coordinates}
+    # val = [coord_dict[i[0]] for i in best_individual if i[0] in coord_dict]
+    # x_val = [v[0] for v in val]
+    # y_val = [v[1] for v in val]
+    # plt.plot(x_val, y_val, marker='o')
+    plt.title('Fitness Graph of Genetic Algorithm\n'
+              '(Close this window to display the final results in terminal)')
+    plt.legend()
+    plt.grid(True)
     plt.show()
+    end_time = time.time()
+
     total_time = end_time - start_time
     print(f'''Somanagoudar, Saikiran, A20542890 solution:
             Initial state: {initState}
@@ -314,4 +370,4 @@ else:
 if sys.argv[2] == '1':
     simulatedAnnealing(p1, p2, coordinates, filename)
 elif sys.argv[2] == '2':
-    geneticAlgorithm(8, 1, p1, p2, coordinates, filename)
+    geneticAlgorithm(100, 1, p1, p2, coordinates, filename)
