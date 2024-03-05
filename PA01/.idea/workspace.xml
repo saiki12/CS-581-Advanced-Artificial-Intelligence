@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="Sixth Commit:&#10;1. Revised the Genetic Algorithm code.">
+    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs581_P01_A20542890.py" beforeDir="false" afterPath="$PROJECT_DIR$/cs581_P01_A20542890.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/campus.csv" beforeDir="false" afterPath="$PROJECT_DIR$/campus.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +70,8 @@
       <workItem from="1709477523741" duration="34855000" />
       <workItem from="1709515759495" duration="19069000" />
       <workItem from="1709554982804" duration="32068000" />
-      <workItem from="1709588604649" duration="1521000" />
+      <workItem from="1709588604649" duration="2170000" />
+      <workItem from="1709595780286" duration="24000" />
     </task>
     <task id="LOCAL-00001" summary="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm.">
       <option name="closed" value="true" />
@@ -152,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709580818217</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.">
+      <option name="closed" value="true" />
+      <created>1709591841652</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1709591841652</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,7 +187,8 @@
     <MESSAGE value="Fourth Commit:&#10;1. Simulated Annealing algorithm implemented.&#10;2. Genetic Algorithm partial implemented." />
     <MESSAGE value="Fifth Commit:&#10;&#10;1. Modified and improved the Genetic algorithm code." />
     <MESSAGE value="Sixth Commit:&#10;1. Revised the Genetic Algorithm code." />
-    <option name="LAST_COMMIT_MESSAGE" value="Sixth Commit:&#10;1. Revised the Genetic Algorithm code." />
+    <MESSAGE value="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PA01$cs581_P01_A20542890.coverage" NAME="cs581_P01_A20542890 Coverage Results" MODIFIED="1709327497399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
