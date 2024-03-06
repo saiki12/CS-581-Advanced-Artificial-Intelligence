@@ -70,6 +70,7 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
     init_path_cost = calculate_distance(cur_solution)
     fit_values = []
     while temperature > 0:
+        iterations += 1
         # Generating new solution by swapping 2 edges in the current solution in every loop
         new_solution = cur_solution[:]
         edge1, edge2 = random.sample(range(1, len(new_solution)), 2)
@@ -91,9 +92,8 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
         elif acceptance_probability > random.random():
             cur_solution = new_solution[:]
 
-        # Temperature cools down at the rate of cooling schedule/cooling rate
-        temperature *= cooling_schedule
-        iterations += 1
+        # Temperature cools down exponentially at the rate of cooling schedule/cooling rate
+        temperature *= math.exp(-iterations * cooling_schedule)
 
     # Rescaling fitness values
     rescaled = rescale_values(fit_values)
