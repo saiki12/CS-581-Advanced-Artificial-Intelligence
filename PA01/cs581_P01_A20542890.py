@@ -16,8 +16,8 @@ def calculate_distance(solution: List[Tuple[str, float, float]]) -> float:
     t_distance = 0
     # last_distance = 0
     for i in range(1, len(solution)):
-        x1, y1, z1 = solution[i - 1]
-        x2, y2, z2 = solution[i]
+        _, y1, z1 = solution[i - 1]
+        _, y2, z2 = solution[i]
         t_distance += math.sqrt((y2 - y1) ** 2 + (z2 - z1) ** 2)
     return t_distance
 
@@ -27,31 +27,12 @@ def calculate_distance2(individual: List[Tuple[str, int]], coordinates: List[Tup
     t_distance = 0
     coord_dict = {coord[0]: coord[1:] for coord in coordinates}
     path_dist = [coord_dict[i[0]] for i in individual if
-                 i[0] in coord_dict]  # Use the integer part of the tuple as the index
+                 i[0] in coord_dict]  # Using integer part of the tuple as the index
     for i in range(1, len(path_dist)):
         x1, y1 = path_dist[i - 1]
         x2, y2 = path_dist[i]
         t_distance += math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
     return t_distance
-
-
-# Rescaling fitness function values
-def rescale_values(values):
-    # Shifting values to ensure the minimum is 0
-    min_value = min(values)
-    shifted_values = [value - min_value for value in values]
-
-    # Finding the new maximum value in the shifted dataset
-    max_shifted = max(shifted_values)
-
-    # Avoiding division by zero in case all values are the same
-    if max_shifted == 0:
-        return [0 for _ in values]  # or [100] if you prefer all max
-
-    # Rescaling values to the range 0 to 100
-    rescaled_values = [(value / max_shifted) * 100 for value in shifted_values]
-
-    return rescaled_values
 
 
 # Simulated Annealing main code
@@ -78,7 +59,6 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
 
         # Fitness function calculation - difference between current solution and the new solution
         distance_difference = calculate_distance(cur_solution) - calculate_distance(new_solution)
-        fit_values.append(distance_difference)
         # Exception handling to avoid the OverflowError
         try:
             acceptance_probability = math.exp(-distance_difference / temperature)
@@ -91,16 +71,14 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
         # If the distance difference is negative, then we allow only with certain probability
         elif acceptance_probability > random.random():
             cur_solution = new_solution[:]
+        fit_values.append(calculate_distance(cur_solution))
 
         # Temperature cools down exponentially at the rate of cooling schedule/cooling rate
         temperature *= math.exp(-iterations * cooling_schedule)
 
-    # Rescaling fitness values
-    rescaled = rescale_values(fit_values)
-
     # PLotting the graph
     i = range(1, iterations + 1)
-    plt.plot(i, rescaled, label='Fitness', color='blue', marker='o')
+    plt.plot(i, fit_values, label='Fitness', color='blue', marker='o')
 
     path_cost = calculate_distance(cur_solution)
     formatted_cost = f"{path_cost:.2f}"
@@ -113,7 +91,7 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
     plt.legend()
     plt.grid(True)
     plt.xlabel('Iterations')
-    plt.ylabel('Fitness values')
+    plt.ylabel('Path cost')
     plt.show()
 
     # Calculating total execution time
@@ -145,8 +123,9 @@ def simulatedAnnealing(temperature: int, cooling_schedule: float, coordinates: L
 
 
 # Calculating fitness function
-def fitness(individual, coordnates):
-    return calculate_distance2(individual, coordnates) ** 2
+def fitness(individual, coordinates):
+    total_distance = calculate_distance2(individual, coordinates)
+    return 1 / total_distance
 
 
 # Selection mechanism - Roulette Wheel
@@ -199,7 +178,7 @@ def two_point_crossover(parent1, parent2):
 def mutation(member, pm):
     for _ in range(len(member)):
         if random.random() < pm:
-            idx1, idx2 = random.sample(range(1, len(member) - 1), 2)  # Exclude start/end city
+            idx1, idx2 = random.sample(range(1, len(member) - 1), 2)
             member[idx1], member[idx2] = member[idx2], member[idx1]
     return member
 
@@ -208,9 +187,9 @@ def mutation(member, pm):
 def generate_population(city_names, n):
     population = []
     for _ in range(n):
-        shuffled_cities = city_names[1:-1]  # Exclude the start/end city for shuffling
+        shuffled_cities = city_names[1:-1]
         random.shuffle(shuffled_cities)
-        individual = [city_names[0]] + shuffled_cities + [city_names[0]]  # Re-add the start/end city
+        individual = [city_names[0]] + shuffled_cities + [city_names[0]]
         population.append(individual)
     return population
 
@@ -231,7 +210,7 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
     min_fit_values, max_fit_values, avg_fit_values = [], [], []
     for i in range(num_iterations):
         # Calculating fitness for each individual in the population
-        fitnesses = [fitness(individual, coordinates) for individual in population]
+        fitnesses = [calculate_distance2(individual, coordinates) for individual in population]
 
         min_fit_values.append(min(fitnesses))
         max_fit_values.append(max(fitnesses))
@@ -251,7 +230,7 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
         child2 = mutation(child2, pm)
 
         # Implementing elitism
-        least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i])[:2]
+        least_fit_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i], reverse=True)[:2]
         population[least_fit_indices[0]] = child1
         population[least_fit_indices[1]] = child2
 
@@ -272,7 +251,7 @@ def geneticAlgorithm(n: int, pc: float, num_iterations: int, pm: float, coordina
     plt.plot(iterations, max_fit_values, label='Max Fitness', color='green', marker='s')
     plt.plot(iterations, avg_fit_values, label='Average Fitness', color='blue', marker='x')
     plt.xlabel('Iterations')
-    plt.ylabel('Fitness values')
+    plt.ylabel('Path cost')
 
     plt.title('Fitness Graph of Genetic Algorithm\n'
               '(Close this window to display the final results in terminal)')

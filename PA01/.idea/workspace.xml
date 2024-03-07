@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="Eighth Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.&#10;2. Did slight modifications.">
+    <list default="true" id="397bbd86-85a7-438f-bf8a-da26bdcefe67" name="Changes" comment="Ninth Commit:&#10;1. Changed temperature cooling schedule to exponential in Simulated Annealing algorithm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs581_P01_A20542890.py" beforeDir="false" afterPath="$PROJECT_DIR$/cs581_P01_A20542890.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +74,13 @@
       <workItem from="1709595780286" duration="24000" />
       <workItem from="1709597693266" duration="144000" />
       <workItem from="1709613576961" duration="660000" />
+      <workItem from="1709679725980" duration="6441000" />
+      <workItem from="1709766868604" duration="5766000" />
+      <workItem from="1709772693682" duration="10180000" />
+      <workItem from="1709783043364" duration="126000" />
+      <workItem from="1709783197540" duration="49000" />
+      <workItem from="1709785912411" duration="112000" />
+      <workItem from="1709788944081" duration="500000" />
     </task>
     <task id="LOCAL-00001" summary="First commit:&#10;1. campus.csv file has 6 locations.&#10;2. The algorithm finds the shortest possible path with Simulated Annealing algorithm.">
       <option name="closed" value="true" />
@@ -186,7 +194,23 @@
       <option name="project" value="LOCAL" />
       <updated>1709597814955</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Ninth Commit:&#10;1. Changed temperature cooling schedule to exponential in Simulated Annealing algorithm">
+      <option name="closed" value="true" />
+      <created>1709688434878</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1709688434878</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Ninth Commit:&#10;1. Changed temperature cooling schedule to exponential in Simulated Annealing algorithm">
+      <option name="closed" value="true" />
+      <created>1709688448423</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1709688448423</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,9 +239,10 @@
     <MESSAGE value="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented." />
     <MESSAGE value="Seventh Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.&#10;2. Did slight modifications." />
     <MESSAGE value="Eighth Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.&#10;2. Did slight modifications." />
-    <option name="LAST_COMMIT_MESSAGE" value="Eighth Commit:&#10;1. Code completed, and both Simulated Annealing and Genetic Algorithms implemented.&#10;2. Did slight modifications." />
+    <MESSAGE value="Ninth Commit:&#10;1. Changed temperature cooling schedule to exponential in Simulated Annealing algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ninth Commit:&#10;1. Changed temperature cooling schedule to exponential in Simulated Annealing algorithm" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PA01$cs581_P01_A20542890.coverage" NAME="cs581_P01_A20542890 Coverage Results" MODIFIED="1709327497399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PA01$cs581_P01_A20542890.coverage" NAME="cs581_P01_A20542890 Coverage Results" MODIFIED="1709767294433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
